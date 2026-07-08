@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Lanka Taxi Meter",
+  "description": "A real-time GPS taxi meter with customizable fares, GPS permission toggle, trip end confirmation, large final fare display, and a print-ready receipt option.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
