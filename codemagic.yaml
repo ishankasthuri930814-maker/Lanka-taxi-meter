@@ -9,6 +9,10 @@ workflows:
     scripts:
       - name: Force Upgrade Gradle and Build
         script: |
+          # බිල්ඩ් එකට ඉල්ලන debug.keystore එක සර්වර් එකේ නිවැරදිම තැන සාදා ගැනීම
+          echo "Generating temporary debug keystore..."
+          keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+
           cd app
           
           # ඇප් එකට අවශ්‍ය කරන Gradle 9.3.1 සංස්කරණය සර්වර් එකට ඩවුන්ලෝඩ් කරනවා
@@ -17,13 +21,10 @@ workflows:
           sudo unzip -d /opt/gradle /tmp/gradle-9.3.1-bin.zip
           export PATH=/opt/gradle/gradle-9.3.1/bin:$PATH
           
-          # නිවැරදි වර්ෂන් එක සෙට් වුණාදැයි පරික්ෂා කිරීම
-          gradle -v
-          
           # Android SDK එක සම්බන්ධ කිරීම
           echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
           
-          # අලුත් වර්ෂන් එකෙන් බිල්ඩ් එක ස්ටාර්ට් කිරීම
+          # APK එක බිල්ඩ් කිරීම
           gradle assembleDebug
     artifacts:
       - "**/build/outputs/apk/debug/*.apk"
