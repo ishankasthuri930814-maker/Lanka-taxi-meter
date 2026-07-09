@@ -7,37 +7,25 @@ workflows:
       events:
         - push
     scripts:
-      - name: Find and Extract Project ZIP
+      - name: Locate Android Project and Build
         script: |
-          # Repository එක ඇතුළේ තියෙන ZIP ෆයිල් එක හොයාගෙන unzip කරනවා
-          ZIP_FILE=$(find . -name "*.zip" | head -n 1)
-          if [ -z "$ZIP_FILE" ]; then
-            echo "No zip file found in repository!"
+          # Repository එක ඇතුළේ build.gradle තියෙන නියම ෆෝල්ඩරය සොයාගැනීම
+          REAL_PROJECT_DIR=$(find . -name "build.gradle*" -exec dirname {} \; | head -n 1)
+          if [ -z "$REAL_PROJECT_DIR" ]; then
+            echo "Error: Android project directory not found!"
             exit 1
           fi
-          echo "Extracting $ZIP_FILE..."
-          unzip -o "$ZIP_FILE" -d extracted_project
+          echo "Android Project found at: $REAL_PROJECT_DIR"
+          cd "$REAL_PROJECT_DIR"
           
-          # Unzip වුණු තැනින් ඇත්තම Android project එක තියෙන තැන සොයාගැනීම
-          PROJECT_DIR=$(find ./extracted_project -name "build.gradle*" -exec dirname {} \; | head -n 1)
-          if [ -z "$PROJECT_DIR" ]; then
-            echo "Android project directory not found inside zip!"
-            exit 1
-          fi
-          echo "Found Android project at: $PROJECT_DIR"
-          
-          # ඊළඟ පියවරවල් වලට පාවිච්චි කරන්න මේ path එක සේව් කරගන්නවා
-          echo "export ANDROID_PROJECT_DIR=\"$PROJECT_DIR\"" >> $CM_ENV
-      - name: Set up local.properties and Gradlew
-        script: |
-          cd "$ANDROID_PROJECT_DIR"
+          # Environment එක සෙට් කිරීම
           echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
-          # gradlew ෆයිල් එක නැත්නම් එකක් අලුතින් හදාගන්නවා
+          
+          # gradlew ෆයිල් එක නැත්නම් අලුතින් සකස් කරගැනීම
           gradle wrapper
           chmod +x gradlew
-      - name: Build Android APK
-        script: |
-          cd "$ANDROID_PROJECT_DIR"
+          
+          # APK එක බිල්ඩ් කිරීම
           ./gradlew assembleDebug
     artifacts:
-      - extracted_project/**/build/outputs/apk/debug/*.apk
+      - "**/build/outputs/apk/debug/*.apk"
