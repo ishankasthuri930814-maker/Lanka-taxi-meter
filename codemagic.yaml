@@ -7,15 +7,23 @@ workflows:
       events:
         - push
     scripts:
-      - name: Force Gradle Build
+      - name: Force Upgrade Gradle and Build
         script: |
-          # app ෆෝල්ඩර් එක ඇතුළට යනවා
           cd app
           
-          # local.properties ෆයිල් එක සාදා ගැනීම
+          # ඇප් එකට අවශ්‍ය කරන Gradle 9.3.1 සංස්කරණය සර්වර් එකට ඩවුන්ලෝඩ් කරනවා
+          echo "Downloading Gradle 9.3.1..."
+          wget https://services.gradle.org/distributions/gradle-9.3.1-bin.zip -P /tmp
+          sudo unzip -d /opt/gradle /tmp/gradle-9.3.1-bin.zip
+          export PATH=/opt/gradle/gradle-9.3.1/bin:$PATH
+          
+          # නිවැරදි වර්ෂන් එක සෙට් වුණාදැයි පරික්ෂා කිරීම
+          gradle -v
+          
+          # Android SDK එක සම්බන්ධ කිරීම
           echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
           
-          # System එකේ තියෙන gradle command එකෙන්ම කෙලින්ම බිල්ඩ් එක ස්ටාර්ට් කරනවා
+          # අලුත් වර්ෂන් එකෙන් බිල්ඩ් එක ස්ටාර්ට් කිරීම
           gradle assembleDebug
     artifacts:
       - "**/build/outputs/apk/debug/*.apk"
