@@ -29,13 +29,12 @@ workflows:
             echo '</resources>' >> "$STRINGS_FILE"
           fi
 
-          # themes.xml එක ඇතුළේ නැති Theme.LankaTaxiMeter ස්වයංක්‍රීයව සෑදීම
+          # themes.xml එක පද්ධතියට ගැලපෙන සරල පොදු Theme එකකට වෙනස් කිරීම
           THEMES_FILE="app/src/main/res/values/themes.xml"
           mkdir -p app/src/main/res/values
           echo '<?xml version="1.0" encoding="utf-8"?>' > "$THEMES_FILE"
           echo '<resources>' >> "$THEMES_FILE"
-          echo '    <style name="Theme.LankaTaxiMeter" parent="Theme.MaterialComponents.DayNight.NoActionBar">' >> "$THEMES_FILE"
-          echo '        <item name="colorPrimary">#FF6200EE</item>' >> "$THEMES_FILE"
+          echo '    <style name="Theme.LankaTaxiMeter" parent="@android:style/Theme.DeviceDefault.NoActionBar">' >> "$THEMES_FILE"
           echo '    </style>' >> "$THEMES_FILE"
           echo '</resources>' >> "$THEMES_FILE"
       - name: Generate Dummy Keystore
