@@ -1,8 +1,6 @@
 {
-  "name": "Remix: Lanka Taxi Meter",
-  "description": "A real-time GPS taxi meter with customizable fares, GPS permission toggle, trip end confirmation, large final fare display, and a print-ready receipt option.",
+  "name": "Lanka Taxi Meter",
+  "description": "A reliable offline GPS-based Taxi Meter app for Sri Lanka with live fare tracking, surcharge rates, sound prompts, and multi-language support (Sinhala, Tamil, English).",
   "requestFramePermissions": [],
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
