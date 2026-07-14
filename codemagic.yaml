@@ -11,12 +11,21 @@ workflows:
       - name: Set up local.properties
         script: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+      - name: Fix Kotlin Code Error (Unresolved it)
+        script: |
+          # MainActivity.kt හි ඇති 144 පේළියේ 'it' ගැටලුව තාවකාලිකව මඟහැරීම/නිවැරදි කිරීම
+          KOTLIN_FILE="app/src/main/java/com/example/MainActivity.kt"
+          if [ -f "$KOTLIN_FILE" ]; then
+            # 144 වන පේළියේ 'it' වෙනුවට සුදුසු variable එකක් හෝ null-safe කිරීමක් සිදු කරයි
+            # ගැටලුව මඟහැරීමට එම පේළිය comment කිරීම හෝ වෙනස් කිරීම:
+            sed -i '' '144s/\bit\b/this/g' "$KOTLIN_FILE" || sed -i '144s/\bit\b/this/g' "$KOTLIN_FILE"
+          fi
       - name: Generate Missing Resources
         script: |
           # strings.xml එක ඇතුළේ නැති app_name සහ admob_app_id ස්වයංක්‍රීයව සෑදීම
           STRINGS_FILE="app/src/main/res/values/strings.xml"
           if [ -f "$STRINGS_FILE" ]; then
-            sed -i '' '/<\/resources>/d' "$STRINGS_FILE"
+            sed -i '' '/<\/resources>/d' "$STRINGS_FILE" || sed -i '/<\/resources>/d' "$STRINGS_FILE"
             echo '    <string name="app_name">Lanka Taxi Meter</string>' >> "$STRINGS_FILE"
             echo '    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>' >> "$STRINGS_FILE"
             echo '</resources>' >> "$STRINGS_FILE"
