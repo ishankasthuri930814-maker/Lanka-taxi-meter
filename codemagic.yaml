@@ -11,6 +11,33 @@ workflows:
       - name: Set up local.properties
         script: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+      - name: Generate Missing Resources
+        script: |
+          # strings.xml එක ඇතුළේ නැති app_name සහ admob_app_id ස්වයංක්‍රීයව සෑදීම
+          STRINGS_FILE="app/src/main/res/values/strings.xml"
+          if [ -f "$STRINGS_FILE" ]; then
+            sed -i '' '/<\/resources>/d' "$STRINGS_FILE"
+            echo '    <string name="app_name">Lanka Taxi Meter</string>' >> "$STRINGS_FILE"
+            echo '    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>' >> "$STRINGS_FILE"
+            echo '</resources>' >> "$STRINGS_FILE"
+          else
+            mkdir -p app/src/main/res/values
+            echo '<?xml version="1.0" encoding="utf-8"?>' > "$STRINGS_FILE"
+            echo '<resources>' >> "$STRINGS_FILE"
+            echo '    <string name="app_name">Lanka Taxi Meter</string>' >> "$STRINGS_FILE"
+            echo '    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>' >> "$STRINGS_FILE"
+            echo '</resources>' >> "$STRINGS_FILE"
+          fi
+
+          # themes.xml එක ඇතුළේ නැති Theme.LankaTaxiMeter ස්වයංක්‍රීයව සෑදීම
+          THEMES_FILE="app/src/main/res/values/themes.xml"
+          mkdir -p app/src/main/res/values
+          echo '<?xml version="1.0" encoding="utf-8"?>' > "$THEMES_FILE"
+          echo '<resources>' >> "$THEMES_FILE"
+          echo '    <style name="Theme.LankaTaxiMeter" parent="Theme.MaterialComponents.DayNight.NoActionBar">' >> "$THEMES_FILE"
+          echo '        <item name="colorPrimary">#FF6200EE</item>' >> "$THEMES_FILE"
+          echo '    </style>' >> "$THEMES_FILE"
+          echo '</resources>' >> "$THEMES_FILE"
       - name: Generate Dummy Keystore
         script: |
           keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
